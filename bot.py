@@ -33,7 +33,7 @@ mentions = api.mentions_timeline(since_id = last_seen_id,tweet_mode='extended')
 for mention in reversed(mentions):
     print(str(mention.id)+' --- '+mention.full_text)
     last_seen_id = mention.id
-    store_last_seen_id(last_seen_id,FILE_NAME)
+    # store_last_seen_id(last_seen_id,FILE_NAME)
     if '#quoteit' in mention.full_text.lower():
         print('Quoted')
         original_tweet_id = mention.in_reply_to_status_id
@@ -42,7 +42,7 @@ for mention in reversed(mentions):
         # fetching the full_text attribute
         full_text = status.full_text 
         quote = re.sub(r"http\S+", "", full_text)
-        author = str(status.author.name)
+        author = str("-" + status.author.name)
         
         print("Quote : " + quote +"\n"+"Author: "+author)
         
@@ -62,4 +62,5 @@ for mention in reversed(mentions):
         # quote_image.text((15,15+offset), author, (216, 233, 237), font=quote_font)
         W, H = (6000,4000)
         quote_image.text((W/2,H/2),quote_text,font = quote_font,fill="#000000",anchor='ms')
+        quote_image.text((W/2,3*H/4),author,font = quote_font,fill="#000000",anchor='ms')
         bg_img.save("quotedbybot.jpg")
