@@ -3,6 +3,8 @@ from config import CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SEC
 from textblob import TextBlob
 import re
 from PIL import Image, ImageDraw, ImageFont
+import textwrap
+from string import ascii_letters
 
 FILE_NAME = 'last_seen_id.txt'
 
@@ -49,18 +51,20 @@ for mention in reversed(mentions):
         bg_img = Image.open("bg.jpg")
         quote_image = ImageDraw.Draw(bg_img)
         
-        quote_font = ImageFont.truetype('roboto-slab/RobotoSlab-Regular.ttf', 152)
+        quote_font = ImageFont.truetype('roboto-slab/RobotoSlab-Bold.ttf', 192)
         quote_text = str(quote)
 
-        # offset = 0
-        # for i in quote_text:
-        #     i = i.split(".")
-        #     for ix in i:
-        #         quote_image.text((15,15+offset), ix, (216, 233, 237), font=quote_font)
-        #         offset += 100
-        
-        # quote_image.text((15,15+offset), author, (216, 233, 237), font=quote_font)
+        # Calculate the average length of a single character of our font.
+        # Note: this takes into account the specific font and font size.
+        avg_char_width = sum(quote_font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        # Translate this average length into a character count
+        max_char_count = int(bg_img.size[0] * .618 / avg_char_width)
+        quote_text = textwrap.fill(text=quote_text, width=35)
+
+
+
+
         W, H = (6000,4000)
-        quote_image.text((W/2,H/2),quote_text,font = quote_font,fill="#000000",anchor='ms')
-        quote_image.text((W/2,3*H/4),author,font = quote_font,fill="#000000",anchor='ms')
+        quote_image.text((W/2,H/2),quote_text,font = quote_font,fill="#000000",anchor='mm')
+        quote_image.text((13*W/20,3*H/4),author,font = quote_font,fill="#000000",anchor='ms')
         bg_img.save("quotedbybot.jpg")
